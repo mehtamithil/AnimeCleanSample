@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/fragSplash">
+
+    <fragment
+        android:id="@+id/fragSplash"
+        android:name="com.anime_clean_sample.presentation.fragment.SplashFragment"
+        tools:layout="@layout/fragment_anime_list">
+
+        <action
+            android:id="@+id/action_fragSplash_to_fragUserAuthentication"
+            app:destination="@id/fragUserAuthentication"
+            app:popUpTo="@id/fragSplash"
+            app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/action_fragSplash_to_fragAnimeList"
+            app:destination="@id/fragAnimeList"
+            app:popUpTo="@id/fragSplash"
+            app:popUpToInclusive="true" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragUserAuthentication"
+        android:name="com.anime_clean_sample.presentation.fragment.UserAuthenticationFragment"
+        tools:layout="@layout/fragment_user_authentication">
+
+        <action
+            android:id="@+id/action_fragUserAuthentication_to_fragAnimeList"
+            app:destination="@id/fragAnimeList"
+            app:popUpTo="@id/fragUserAuthentication"
+            app:popUpToInclusive="true" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragAnimeList"
+        android:name="com.anime_clean_sample.presentation.fragment.AnimeListFragment"
+        tools:layout="@layout/fragment_anime_list">
+
+        <action
+            android:id="@+id/action_fragAnimeList_to_fragFavoriteAnime"
+            app:destination="@id/fragFavoriteAnime" />
+
+        <action
+            android:id="@+id/action_fragAnimeList_to_fragAnimeDetails"
+            app:destination="@id/fragAnimeDetail" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragFavoriteAnime"
+        android:name="com.anime_clean_sample.presentation.fragment.FavoriteAnimeFragment"
+        tools:layout="@layout/fragment_favorite_anime">
+
+        <action
+            android:id="@+id/action_fragAnimeList_to_fragAnimeDetails"
+            app:destination="@id/fragAnimeDetail" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragAnimeDetail"
+        android:name="com.anime_clean_sample.presentation.fragment.AnimeDetailsFragment"
+        tools:layout="@layout/fragment_anime_details">
+
+        <argument
+            android:name="id"
+            android:defaultValue="-1"
+            app:argType="integer"
+            app:nullable="false" />
+
+    </fragment>
+
+</navigation>
