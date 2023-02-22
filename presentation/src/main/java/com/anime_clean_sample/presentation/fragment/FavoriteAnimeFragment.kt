@@ -25,6 +25,9 @@ class FavoriteAnimeFragment : BaseFragment<FragmentFavoriteAnimeBinding, Favorit
     override val layoutResId: Int
         get() = R.layout.fragment_favorite_anime
 
+    override val requiresFavoriteMenu: Boolean
+        get() = false
+
     private val rvAdapter by lazy {
         AnimeRVAdapter { id ->
             findNavController().navigate(
@@ -53,6 +56,7 @@ class FavoriteAnimeFragment : BaseFragment<FragmentFavoriteAnimeBinding, Favorit
 
         lifecycleScope.launchWhenStarted {
             vm.getFavoriteAnimeList().collectLatest {
+                binding.prgbr.visibility = View.GONE
                 rvAdapter.submitData(it.map { it.toAnimeListItemUiState() })
             }
         }

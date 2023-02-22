@@ -43,10 +43,6 @@
         tools:layout="@layout/fragment_anime_list">
 
         <action
-            android:id="@+id/action_fragAnimeList_to_fragFavoriteAnime"
-            app:destination="@id/fragFavoriteAnime" />
-
-        <action
             android:id="@+id/action_fragAnimeList_to_fragAnimeDetails"
             app:destination="@id/fragAnimeDetail" />
 
@@ -75,5 +71,9 @@
             app:nullable="false" />
 
     </fragment>
+
+    <action
+        android:id="@+id/action_move_to_fragFavoriteAnime"
+        app:destination="@id/fragFavoriteAnime" />
 
 </navigation>

@@ -4,13 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.navigation.fragment.findNavController
+import com.anime_clean_sample.presentation.NavGraphDirections
 import com.anime_clean_sample.presentation.R
 
 abstract class BaseFragment<BNDNG : ViewDataBinding, out VM : ViewModel> : Fragment() {
@@ -21,15 +21,13 @@ abstract class BaseFragment<BNDNG : ViewDataBinding, out VM : ViewModel> : Fragm
 
     protected abstract val layoutResId: Int
 
+    protected open val requiresFavoriteMenu
+        get() = true
+
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ) = DataBindingUtil.inflate<BNDNG>(
-        inflater,
-        layoutResId,
-        container,
-        false
+        inflater, layoutResId, container, false
     ).apply {
         binding = this
         lifecycleOwner = this@BaseFragment
@@ -38,19 +36,29 @@ abstract class BaseFragment<BNDNG : ViewDataBinding, out VM : ViewModel> : Fragm
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         view.findViewById<Toolbar>(R.id.tlbr)?.let { tlbr ->
-            val activity = requireActivity()
-            if (activity is AppCompatActivity) {
-                activity.setSupportActionBar(tlbr)
-                parentFragment?.let { navHostFrag ->
-                    if (navHostFrag.childFragmentManager.backStackEntryCount > 0) {
-                        activity.supportActionBar?.let {
-                            it.setDisplayHomeAsUpEnabled(true)
-                            it.setDisplayShowHomeEnabled(true)
-                        }
-                        tlbr.setNavigationOnClickListener {
-                            findNavController().navigateUp()
-                        }
-                    }
+            manageBackPress(tlbr)
+            manageFavoriteMenu(tlbr)
+        }
+    }
+
+    private fun manageFavoriteMenu(tlbr: Toolbar) {
+        if (requiresFavoriteMenu) {
+            tlbr.inflateMenu(R.menu.menu_favorite)
+            tlbr.setOnMenuItemClickListener {
+                if (it.itemId == R.id.mnfavorite) {
+                    findNavController().navigate(NavGraphDirections.actionMoveToFragFavoriteAnime())
+                    true
+                } else false
+            }
+        }
+    }
+
+    private fun manageBackPress(tlbr: Toolbar) {
+        parentFragment?.let { navHostFrag ->
+            if (navHostFrag.childFragmentManager.backStackEntryCount > 0) {
+                tlbr.setNavigationIcon(R.drawable.ic_back)
+                tlbr.setNavigationOnClickListener {
+                    findNavController().navigateUp()
                 }
             }
         }

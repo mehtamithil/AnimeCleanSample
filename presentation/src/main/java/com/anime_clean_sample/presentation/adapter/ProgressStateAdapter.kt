@@ -28,7 +28,7 @@ class ProgressStateAdapter : LoadStateAdapter<ProgressStateAdapter.LoadStateVH>(
         ViewHolder(rvRowPrgbrBinding.root) {
 
         fun bind(loadState: LoadState) {
-            rvRowPrgbrBinding.isLoading = loadState is LoadState.Loading
+            rvRowPrgbrBinding.isLoading = loadState == LoadState.Loading
         }
     }
 }

@@ -13,6 +13,16 @@
             layout="@layout/include_tlbr"
             app:title="@{`Favorite Anime List`}" />
 
+        <ProgressBar
+            android:id="@+id/prgbr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="@color/app_blue"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvAnimeList"
             android:layout_width="0dp"

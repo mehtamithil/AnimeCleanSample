@@ -13,6 +13,16 @@
             layout="@layout/include_tlbr"
             app:title="@{`Anime List`}" />
 
+        <ProgressBar
+            android:id="@+id/prgbr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="@color/app_blue"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvAnimeList"
             android:layout_width="0dp"
@@ -24,18 +34,6 @@
             app:layout_constraintTop_toBottomOf="@+id/tlbr"
             tools:itemCount="10"
             tools:listitem="@layout/rv_row_anime" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabFavorite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|bottom"
-            android:layout_margin="16dp"
-            android:backgroundTint="@color/app_blue"
-            android:src="@drawable/chk_favorite"
-            android:tint="@android:color/black"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

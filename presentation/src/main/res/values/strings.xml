@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">CleanArchitectureSample</string>
+    <string name="menu_favorite">Favorite</string>
 </resources>

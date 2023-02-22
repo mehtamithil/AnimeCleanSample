@@ -40,30 +40,19 @@ class AnimeListFragment : BaseFragment<FragmentAnimeListBinding, AnimeListVM>() 
         binding.rvAnimeList.apply {
             setHasFixedSize(true)
             layoutManager = GridLayoutManager(
-                requireContext(),
-                2,
-                GridLayoutManager.VERTICAL,
-                false
+                requireContext(), 2, GridLayoutManager.VERTICAL, false
             )
             adapter = rvAdapter.apply {
                 withLoadStateHeaderAndFooter(
-                    header = ProgressStateAdapter(),
-                    footer = ProgressStateAdapter()
+                    header = ProgressStateAdapter(), footer = ProgressStateAdapter()
                 )
             }
         }
 
-        binding.fabFavorite.setOnClickListener {
-            findNavController().navigate(
-                AnimeListFragmentDirections.actionFragAnimeListToFragFavoriteAnime()
-            )
-        }
-
         lifecycleScope.launchWhenStarted {
             vm.animeList.collectLatest {
-                rvAdapter.submitData(
-                    it.map { it.toAnimeListItemUiState() }
-                )
+                binding.prgbr.visibility = View.GONE
+                rvAdapter.submitData(it.map { it.toAnimeListItemUiState() })
             }
         }
     }
