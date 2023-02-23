@@ -1,3 +1,21 @@
+import org.gradle.api.JavaVersion
+
+object AppVersionInfo {
+    const val versionCode = 1
+    const val versionName = "1.0"
+}
+
+object ApiVersions {
+    const val compileSdk = 33
+    const val minSdk = 21
+    const val targetSdk = 33
+}
+
+object jvm {
+    const val jvmTarget = "1.8"
+    val javaVersion = JavaVersion.VERSION_1_8
+}
+
 object Versions {
     const val core_ktx = "1.9.0"
     const val appcompat = "1.6.1"
