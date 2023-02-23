@@ -8,14 +8,14 @@ plugins {
 
 android {
     namespace = "com.anime_clean_sample"
-    compileSdk = 33
+    compileSdk = ApiVersions.compileSdk
 
     defaultConfig {
         applicationId = "com.anime_clean_sample"
-        minSdk = 26
-        targetSdk = 33
-        versionCode = 1
-        versionName = "1.0"
+        minSdk = ApiVersions.minSdk
+        targetSdk = ApiVersions.targetSdk
+        versionCode = AppVersionInfo.versionCode
+        versionName = AppVersionInfo.versionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -31,12 +31,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = jvm.javaVersion
+        targetCompatibility = jvm.javaVersion
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = jvm.jvmTarget
     }
 
     buildFeatures {
