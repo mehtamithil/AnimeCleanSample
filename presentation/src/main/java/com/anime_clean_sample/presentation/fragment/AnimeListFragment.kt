@@ -28,9 +28,7 @@ class AnimeListFragment : BaseFragment<FragmentAnimeListBinding, AnimeListVM>() 
     private val rvAdapter by lazy {
         AnimeRVAdapter { id ->
             findNavController().navigate(
-                AnimeListFragmentDirections.actionFragAnimeListToFragAnimeDetails(
-                    id
-                )
+                AnimeListFragmentDirections.actionFragAnimeListToFragAnimeDetails(id)
             )
         }
     }
@@ -40,11 +38,15 @@ class AnimeListFragment : BaseFragment<FragmentAnimeListBinding, AnimeListVM>() 
         binding.rvAnimeList.apply {
             setHasFixedSize(true)
             layoutManager = GridLayoutManager(
-                requireContext(), 2, GridLayoutManager.VERTICAL, false
+                requireContext(),
+                2,
+                GridLayoutManager.VERTICAL,
+                false
             )
             adapter = rvAdapter.apply {
                 withLoadStateHeaderAndFooter(
-                    header = ProgressStateAdapter(), footer = ProgressStateAdapter()
+                    header = ProgressStateAdapter(),
+                    footer = ProgressStateAdapter()
                 )
             }
         }

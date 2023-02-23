@@ -1,11 +1,10 @@
 package com.anime_clean_sample.data.source.local
 
 import androidx.paging.PagingData
-import androidx.paging.PagingSource
 import com.anime_clean_sample.domain.model.Anime
 import kotlinx.coroutines.flow.Flow
 
-abstract class AnimeLDS : PagingSource<Int, Anime>() {
+abstract class AnimeLDS {
 
     abstract fun getSavedAnimeList(): Flow<PagingData<Anime>>
 

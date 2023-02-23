@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class UserCredentialsPDS @Inject constructor(
+class UserCredentialsPreferenceDataStore @Inject constructor(
     private val dataStore: DataStore<Preferences>
 ) {
     private val keyUsername = stringPreferencesKey("username")
