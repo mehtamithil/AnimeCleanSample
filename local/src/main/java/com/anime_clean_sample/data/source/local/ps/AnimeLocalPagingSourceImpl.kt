@@ -1,6 +1,6 @@
 package com.anime_clean_sample.data.source.local.ps
 
-import androidx.paging.*
+import androidx.paging.PagingState
 import com.anime_clean_sample.data.source.local.db.dao.AnimeDao
 import com.anime_clean_sample.data.source.local.db.mapper.toDomain
 import com.anime_clean_sample.data.source.ps.AnimePagingSource
@@ -8,7 +8,6 @@ import com.anime_clean_sample.domain.di.IO
 import com.anime_clean_sample.domain.model.Anime
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -43,12 +42,4 @@ class AnimeLocalPagingSourceImpl @Inject constructor(
                 LoadResult.Error(e)
             }
         }
-
-    override fun getAnimeList(pageSize: Int, maxSize: Int): Flow<PagingData<Anime>> = Pager(
-        config = PagingConfig(
-            pageSize = pageSize,
-            maxSize = maxSize
-        ),
-        pagingSourceFactory = { this }
-    ).flow
 }
