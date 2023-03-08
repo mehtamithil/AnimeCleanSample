@@ -10,6 +10,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.anime_clean_sample.presentation.R
 import com.anime_clean_sample.presentation.databinding.FragmentAnimeDetailsBinding
 import com.anime_clean_sample.presentation.fragment.base.BaseFragment
+import com.anime_clean_sample.presentation.ui.event.AnimeDetailUiEvent
 import com.anime_clean_sample.presentation.vm.AnimeDetailsVM
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,9 +37,7 @@ class AnimeDetailsFragment : BaseFragment<FragmentAnimeDetailsBinding, AnimeDeta
                         binding.apply {
                             anime = it
                             chkFavorite.setOnCheckedChangeListener { _, isChecked ->
-                                if (isChecked != it.isFavorite) {
-                                    vm.updateFavorite(isChecked)
-                                }
+                                vm.onUiEvent(AnimeDetailUiEvent.OnAnimeSavedStatusChanged(isChecked))
                             }
                         }
                     }
@@ -46,8 +45,9 @@ class AnimeDetailsFragment : BaseFragment<FragmentAnimeDetailsBinding, AnimeDeta
 
                 launch {
                     vm.message.collect {
-                        if (it.isNotEmpty()) {
-                            Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG).show()
+                        val msg = it.asString(requireContext())
+                        if (msg.isNotEmpty()) {
+                            Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG).show()
                         }
                     }
                 }

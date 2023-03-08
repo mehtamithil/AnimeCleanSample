@@ -7,8 +7,10 @@ import com.anime_clean_sample.domain.usecase.anime.GetAnimeByIdUseCase
 import com.anime_clean_sample.domain.usecase.anime.SaveAnimeToFavoriteUseCase
 import com.anime_clean_sample.presentation.mapper.toAnime
 import com.anime_clean_sample.presentation.mapper.toAnimeDetailsUiState
-import com.anime_clean_sample.presentation.ui_state.AnimeDetailsUiState
+import com.anime_clean_sample.presentation.ui.event.AnimeDetailUiEvent
+import com.anime_clean_sample.presentation.ui.state.AnimeDetailsUiState
 import com.anime_clean_sample.presentation.vm.base.BaseViewModel
+import com.anime_clean_sample.resource.UiText
 import com.anime_clean_sample.resource.constants.INVALID_ID
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -32,8 +34,8 @@ class AnimeDetailsVM @Inject constructor(
     val animeDetailsUiState: StateFlow<AnimeDetailsUiState>
         get() = _animeDetailsUiState
 
-    private val _message = MutableSharedFlow<String>()
-    val message: SharedFlow<String>
+    private val _message = MutableSharedFlow<UiText>()
+    val message: SharedFlow<UiText>
         get() = _message
 
     init {
@@ -49,15 +51,22 @@ class AnimeDetailsVM @Inject constructor(
             .launchIn(supervisorScope)
     }
 
-    fun updateFavorite(save: Boolean) = supervisorScope.launch {
-        (if (save) saveAnimeToFavoriteUseCase(animeDetailsUiState.value.toAnime())
-        else deleteFavoriteAnimeUseCase(animeDetailsUiState.value.toAnime()))
-            .flowOn(dispatcher)
-            .collectLatest {
-                _animeDetailsUiState.value = _animeDetailsUiState.value.copy(
-                    isFavorite = save
-                )
-                _message.emit(it.data)
+    fun onUiEvent(uiEvent: AnimeDetailUiEvent) {
+        when (uiEvent) {
+            is AnimeDetailUiEvent.OnAnimeSavedStatusChanged -> supervisorScope.launch {
+                if (uiEvent.isFavorite != animeDetailsUiState.value.isFavorite) {
+                    if (uiEvent.isFavorite) {
+                        saveAnimeToFavoriteUseCase(animeDetailsUiState.value.toAnime())
+                    } else {
+                        deleteFavoriteAnimeUseCase(animeDetailsUiState.value.toAnime())
+                    }.flowOn(dispatcher)
+                        .collectLatest {
+                            _animeDetailsUiState.value =
+                                _animeDetailsUiState.value.copy(isFavorite = uiEvent.isFavorite)
+                            _message.emit(it.data)
+                        }
+                }
             }
+        }
     }
 }

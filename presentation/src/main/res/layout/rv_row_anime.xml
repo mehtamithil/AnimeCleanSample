@@ -7,7 +7,7 @@
 
         <variable
             name="anime"
-            type="com.anime_clean_sample.presentation.ui_state.AnimeListItemUiState" />
+            type="com.anime_clean_sample.presentation.ui.state.AnimeListItemUiState" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

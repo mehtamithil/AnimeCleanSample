@@ -4,26 +4,31 @@
 
     <data>
 
-        <import type="android.view.View" />
-
         <variable
             name="username"
-            type="kotlinx.coroutines.flow.MutableStateFlow&lt;String&gt;" />
+            type="kotlinx.coroutines.flow.MutableStateFlow&lt;String>" />
 
         <variable
             name="password"
-            type="kotlinx.coroutines.flow.MutableStateFlow&lt;String&gt;" />
+            type="kotlinx.coroutines.flow.MutableStateFlow&lt;String>" />
+
+        <variable
+            name="confirmPassword"
+            type="kotlinx.coroutines.flow.MutableStateFlow&lt;String>" />
+
+        <variable
+            name="isTermsAccepted"
+            type="kotlinx.coroutines.flow.MutableStateFlow&lt;Boolean>" />
 
     </data>
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:background="@android:color/black"
         android:layout_height="match_parent">
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
             android:background="@android:color/black"
             android:gravity="center"
@@ -59,8 +64,8 @@
                     android:id="@+id/edtUsername"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@={username}"
                     android:hint="Username"
+                    android:text="@={username}"
                     android:textColor="@color/app_blue"
                     android:textColorHint="@color/app_blue" />
 
@@ -69,6 +74,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
                 app:theme="@style/text_input_layout_style">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -76,32 +82,57 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Password"
-                    android:text="@={password}"
                     android:inputType="textPassword"
+                    android:text="@={password}"
                     android:textColor="@color/app_blue"
                     android:textColorHint="@color/app_blue" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/txtRegister"
-                android:layout_width="wrap_content"
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginTop="10dp"
-                android:background="@android:color/transparent"
-                android:clickable="true"
-                android:text="Register here!"
-                android:textColor="@color/app_blue"
-                android:textStyle="italic" />
+                android:layout_marginBottom="20dp"
+                app:theme="@style/text_input_layout_style">
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnLogin"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtConfirmPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Confirm Password"
+                    android:inputType="textPassword"
+                    android:text="@={confirmPassword}"
+                    android:textColor="@color/app_blue"
+                    android:textColorHint="@color/app_blue" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/chkTerms"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/app_blue"
-                android:text="Login"
-                android:textColor="@android:color/white" />
+                android:layout_marginBottom="20dp"
+                android:buttonTint="@android:color/white"
+                android:checked="@={isTermsAccepted}"
+                android:text="Accept all terms"
+                android:textColor="@color/app_blue" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnRegister"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/app_blue"
+                    android:text="Register"
+                    android:textColor="@android:color/white" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 

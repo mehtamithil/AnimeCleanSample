@@ -6,7 +6,7 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.anime_clean_sample.presentation.databinding.RvRowAnimeBinding
-import com.anime_clean_sample.presentation.ui_state.AnimeListItemUiState
+import com.anime_clean_sample.presentation.ui.state.AnimeListItemUiState
 
 class AnimeRVAdapter(private val onClick: (id: Int) -> Unit) :
     PagingDataAdapter<AnimeListItemUiState, AnimeRVAdapter.AnimeVH>(COMPARATOR) {

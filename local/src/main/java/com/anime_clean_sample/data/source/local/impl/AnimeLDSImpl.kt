@@ -2,8 +2,8 @@ package com.anime_clean_sample.data.source.local.impl
 
 import com.anime_clean_sample.data.source.local.AnimeLDS
 import com.anime_clean_sample.data.source.local.db.dao.AnimeDao
-import com.anime_clean_sample.data.source.local.db.mapper.toData
-import com.anime_clean_sample.data.source.local.db.mapper.toDomain
+import com.anime_clean_sample.data.source.local.db.mapper.toAnime
+import com.anime_clean_sample.data.source.local.db.mapper.toAnimeEntity
 import com.anime_clean_sample.data.source.local.di.Local
 import com.anime_clean_sample.data.source.ps.AnimePagingSource
 import com.anime_clean_sample.domain.model.Anime
@@ -16,12 +16,12 @@ class AnimeLDSImpl @Inject constructor(
 ) : AnimeLDS() {
 
     override suspend fun getSavedAnime(id: Int) = animeDao.getById(id).map {
-        it?.toDomain()
+        it?.toAnime()
     }
 
-    override suspend fun saveAnime(anime: Anime) = animeDao.insert(anime.toData())
+    override suspend fun saveAnime(anime: Anime) = animeDao.insert(anime.toAnimeEntity())
 
-    override suspend fun deleteAnime(anime: Anime) = animeDao.delete(anime.toData())
+    override suspend fun deleteAnime(anime: Anime) = animeDao.delete(anime.toAnimeEntity())
 
     override fun getSavedAnimeList() = animePagingSource.getAnimeList()
 }

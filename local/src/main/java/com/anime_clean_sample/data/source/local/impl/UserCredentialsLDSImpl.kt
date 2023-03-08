@@ -1,8 +1,10 @@
 package com.anime_clean_sample.data.source.local.impl
 
 import com.anime_clean_sample.data.source.local.UserCredentialsLDS
-import com.anime_clean_sample.data.source.local.db.mapper.toData
-import com.anime_clean_sample.data.source.local.db.mapper.toDomain
+import com.anime_clean_sample.data.source.local.db.mapper.toBoolean
+import com.anime_clean_sample.data.source.local.db.mapper.toIsUserLoggedIn
+import com.anime_clean_sample.data.source.local.db.mapper.toPairOfUsernameAndPassword
+import com.anime_clean_sample.data.source.local.db.mapper.toUserCredentials
 import com.anime_clean_sample.data.source.local.ds.UserCredentialsPreferenceDataStore
 import com.anime_clean_sample.domain.model.UserCredentials
 import kotlinx.coroutines.flow.Flow
@@ -14,18 +16,18 @@ class UserCredentialsLDSImpl @Inject constructor(
 ) : UserCredentialsLDS {
 
     override suspend fun getUserCredentials() = userCredentialsPreferenceDataStore.getUserCredentials().map {
-        it.toDomain()
+        it.toUserCredentials()
     }
 
     override suspend fun saveUser(userCredentials: UserCredentials) {
-        userCredentialsPreferenceDataStore.setCredentials(userCredentials.toData())
+        userCredentialsPreferenceDataStore.setCredentials(userCredentials.toPairOfUsernameAndPassword())
     }
 
     override suspend fun isUserLoggedIn(): Flow<Boolean> = userCredentialsPreferenceDataStore.isLoggedIn().map {
-        it.toDomain()
+        it.toBoolean()
     }
 
     override suspend fun setIsUserLoggedIn(isUserLoggedIn: Boolean) {
-        userCredentialsPreferenceDataStore.setLoggedIn(isUserLoggedIn.toData())
+        userCredentialsPreferenceDataStore.setLoggedIn(isUserLoggedIn.toIsUserLoggedIn())
     }
 }

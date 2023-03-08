@@ -2,7 +2,7 @@ package com.anime_clean_sample.data.source.local.ps
 
 import androidx.paging.PagingState
 import com.anime_clean_sample.data.source.local.db.dao.AnimeDao
-import com.anime_clean_sample.data.source.local.db.mapper.toDomain
+import com.anime_clean_sample.data.source.local.db.mapper.toAnime
 import com.anime_clean_sample.data.source.ps.AnimePagingSource
 import com.anime_clean_sample.domain.di.IO
 import com.anime_clean_sample.domain.model.Anime
@@ -27,7 +27,7 @@ class AnimeLocalPagingSourceImpl @Inject constructor(
             val page = params.key ?: 0
             return@withContext try {
                 val animeList = animeDao.getList(params.loadSize, page * params.loadSize)?.map {
-                    it.toDomain()
+                    it.toAnime()
                 } ?: emptyList()
 
                 // simulate page loading

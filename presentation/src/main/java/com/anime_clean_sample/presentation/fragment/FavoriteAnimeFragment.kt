@@ -3,6 +3,8 @@ package com.anime_clean_sample.presentation.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.map
@@ -15,7 +17,8 @@ import com.anime_clean_sample.presentation.fragment.base.BaseFragment
 import com.anime_clean_sample.presentation.mapper.toAnimeListItemUiState
 import com.anime_clean_sample.presentation.vm.FavoriteAnimeVM
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
 class FavoriteAnimeFragment : BaseFragment<FragmentFavoriteAnimeBinding, FavoriteAnimeVM>() {
@@ -39,13 +42,16 @@ class FavoriteAnimeFragment : BaseFragment<FragmentFavoriteAnimeBinding, Favorit
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.rvAnimeList.apply {
+
             setHasFixedSize(true)
+
             layoutManager = GridLayoutManager(
                 requireContext(),
                 2,
                 GridLayoutManager.VERTICAL,
                 false
             )
+
             adapter = rvAdapter.apply {
                 withLoadStateHeaderAndFooter(
                     header = ProgressStateAdapter(),
@@ -54,11 +60,10 @@ class FavoriteAnimeFragment : BaseFragment<FragmentFavoriteAnimeBinding, Favorit
             }
         }
 
-        lifecycleScope.launchWhenStarted {
-            vm.getFavoriteAnimeList().collectLatest {
-                binding.prgbr.visibility = View.GONE
-                rvAdapter.submitData(it.map { it.toAnimeListItemUiState() })
-            }
-        }
+        vm.getFavoriteAnimeList().onEach {
+            binding.prgbr.visibility = View.GONE
+            rvAdapter.submitData(it.map { it.toAnimeListItemUiState() })
+        }.flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+            .launchIn(lifecycleScope)
     }
 }

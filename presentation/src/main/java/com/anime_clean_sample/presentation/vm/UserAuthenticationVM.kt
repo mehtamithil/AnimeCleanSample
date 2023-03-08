@@ -1,118 +1,81 @@
 package com.anime_clean_sample.presentation.vm
 
-import com.anime_clean_sample.domain.model.UserCredentials
-import com.anime_clean_sample.domain.usecase.user.IsValidUserCredentialsUseCase
-import com.anime_clean_sample.domain.usecase.user.SaveUserUseCase
-import com.anime_clean_sample.domain.usecase.user.ValidateUserFieldsUseCase
-import com.anime_clean_sample.presentation.ui_state.UserAuthUiState
+import com.anime_clean_sample.domain.di.IO
+import com.anime_clean_sample.domain.usecase.user.IsValidPasswordUC
+import com.anime_clean_sample.domain.usecase.user.IsValidUsernameUC
+import com.anime_clean_sample.domain.usecase.user.IsVerifiedUserUC
+import com.anime_clean_sample.presentation.mapper.toUserCredentials
+import com.anime_clean_sample.presentation.ui.event.UserAuthenticationUiEvent
+import com.anime_clean_sample.presentation.ui.state.UserAuthenticationUiState
 import com.anime_clean_sample.presentation.vm.base.BaseViewModel
-import com.anime_clean_sample.resource.Resource
+import com.anime_clean_sample.resource.Result
+import com.anime_clean_sample.resource.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class UserAuthenticationVM @Inject constructor(
-    private val validateUserFieldsUseCase: ValidateUserFieldsUseCase,
-    private val isValidUserCredentialsUseCase: IsValidUserCredentialsUseCase,
-    private val saveUserUseCase: SaveUserUseCase
+    private val isValidUserNameUC: IsValidUsernameUC,
+    private val isValidPasswordUC: IsValidPasswordUC,
+    private val isVerifiedUserUC: IsVerifiedUserUC,
+    @IO private val dispatcher: CoroutineDispatcher
 ) : BaseViewModel() {
 
-    private val _userAuthUiState = MutableSharedFlow<UserAuthUiState>().apply {
-        tryEmit(UserAuthUiState())
-    }
-    val userAuthUiState: SharedFlow<UserAuthUiState>
-        get() = _userAuthUiState
+    private val _uiState = MutableStateFlow(UserAuthenticationUiState())
+    val uiState = _uiState.asStateFlow()
 
-    fun onSignUp(username: String, password: String) = supervisorScope.launch {
-        val userCredentials = UserCredentials(
-            username = username,
-            password = password
-        )
-        validateUserFieldsUseCase(userCredentials).onEach { validationResult ->
-            when (validationResult) {
-                is Resource.Success -> {
-                    saveUserUseCase(
-                        scope = supervisorScope,
-                        userCredentials = userCredentials
-                    ).collectLatest {
-                        when (it) {
-                            is Resource.Success -> _userAuthUiState.emit(
-                                UserAuthUiState(
-                                    isAuthSuccess = true,
-                                    isLoading = false
-                                )
-                            )
+    private val _messageUpdate = MutableSharedFlow<UiText>()
+    val messageUpdate = _messageUpdate.asSharedFlow()
 
-                            is Resource.InProgress -> _userAuthUiState.emit(
-                                UserAuthUiState(
-                                    isLoading = true
-                                )
-                            )
-
-                            is Resource.Failure -> _userAuthUiState.emit(
-                                UserAuthUiState(
-                                    message = it.error,
-                                    isLoading = false
-                                )
-                            )
-                        }
-                    }
-                }
-                is Resource.Failure -> _userAuthUiState.emit(
-                    UserAuthUiState(
-                        message = validationResult.error,
-                        isLoading = false
-                    )
-                )
-                else -> {}
+    fun onUserAuthenticationEvent(uiEvent: UserAuthenticationUiEvent) = supervisorScope.launch {
+        when (uiEvent) {
+            is UserAuthenticationUiEvent.OnUsernameChanged -> {
+                _uiState.update { _uiState.value.copy(username = uiEvent.username) }
             }
-        }.launchIn(supervisorScope)
-    }
-
-    fun onSignIn(username: String, password: String) = supervisorScope.launch {
-        val userCredentials = UserCredentials(
-            username = username,
-            password = password
-        )
-        validateUserFieldsUseCase(userCredentials).collectLatest { validationResult ->
-            when (validationResult) {
-                is Resource.Success -> {
-                    isValidUserCredentialsUseCase(
-                        scope = supervisorScope,
-                        userCredentials = userCredentials
-                    ).collectLatest {
-                        when (it) {
-                            is Resource.Success -> _userAuthUiState.emit(
-                                UserAuthUiState(
-                                    isAuthSuccess = true,
-                                    isLoading = false
-                                )
-                            )
-
-                            is Resource.InProgress -> _userAuthUiState.emit(
-                                UserAuthUiState(
-                                    isLoading = true
-                                )
-                            )
-
-                            is Resource.Failure -> _userAuthUiState.emit(
-                                UserAuthUiState(
-                                    message = it.error,
-                                    isLoading = false
-                                )
-                            )
+            is UserAuthenticationUiEvent.OnPasswordChanged -> {
+                _uiState.update { _uiState.value.copy(password = uiEvent.password) }
+            }
+            is UserAuthenticationUiEvent.OnLoginClicked -> {
+                _uiState.update { _uiState.value.copy(isLoading = true) }
+                _uiState.value.apply {
+                    combine(
+                        isValidUserNameUC(username),
+                        isValidPasswordUC(password),
+                    ) { isValidUsername, isValidPassword ->
+                        listOf(
+                            isValidUsername,
+                            isValidPassword
+                        ).firstOrNull { it is Result.Failure }?.let {
+                            if (it is Result.Failure) {
+                                _uiState.update { copy(isLoading = false) }
+                                _messageUpdate.emit(it.error)
+                            }
+                        } ?: run {
+                            isVerifiedUserUC(toUserCredentials()).map {
+                                when (it) {
+                                    is Result.InProgress -> _uiState.update {
+                                        copy(isLoading = true)
+                                    }
+                                    is Result.Failure -> {
+                                        _uiState.update {
+                                            copy(isLoading = false)
+                                        }
+                                        _messageUpdate.emit(it.error)
+                                    }
+                                    is Result.Success -> {
+                                        _uiState.update {
+                                            copy(isAuthSuccess = true, isLoading = false)
+                                        }
+                                        _messageUpdate.emit(it.data)
+                                    }
+                                }
+                            }.flowOn(dispatcher).launchIn(supervisorScope)
                         }
-                    }
+                    }.flowOn(dispatcher).launchIn(supervisorScope)
                 }
-                is Resource.Failure -> _userAuthUiState.emit(
-                    UserAuthUiState(
-                        message = validationResult.error,
-                        isLoading = false
-                    )
-                )
-                else -> {}
             }
         }
     }

@@ -35,7 +35,16 @@
             app:popUpTo="@id/fragUserAuthentication"
             app:popUpToInclusive="true" />
 
+        <action
+            android:id="@+id/action_fragUserAuthentication_to_fragUserRegistration"
+            app:destination="@id/fragUserRegistration" />
+
     </fragment>
+
+    <fragment
+        android:id="@+id/fragUserRegistration"
+        android:name="com.anime_clean_sample.presentation.fragment.UserRegistrationFragment"
+        tools:layout="@layout/fragment_user_registration" />
 
     <fragment
         android:id="@+id/fragAnimeList"

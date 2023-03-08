@@ -11,7 +11,7 @@ object ApiVersions {
     const val targetSdk = 33
 }
 
-object jvm {
+object Jvm {
     const val jvmTarget = "1.8"
     val javaVersion = JavaVersion.VERSION_1_8
 }

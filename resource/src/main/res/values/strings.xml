@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Anime (Clean Architecture Sample)</string>
+    <string name="error_empty_username">Username can\'t be empty</string>
+    <string name="error_empty_password">Password can\'t be empty</string>
+    <string name="error_min_username_char">minimum length of Username should be %d characters.</string>
+    <string name="error_min_password_char">minimum length of Password should be %d characters.</string>
+    <string name="error_password_content">Password should contain at-least 1: uppercase &amp; lowercase alphabet and a digit.</string>
+    <string name="error_both_passwords_doesnt_match">Password and Confirm Password doesn\'t match.</string>
+    <string name="user_not_logged_in">User isn\'t Logged in!</string>
+    <string name="user_registered_successfully">User registered successfully!</string>
+    <string name="valid_user">Valid User!</string>
+    <string name="invalid_user">Invalid User!</string>
+    <string name="accept_terms">Please accept all the terms and conditions to proceed.</string>
+    <string name="anime_removed">Successfully removed Anime from favorites</string>
+    <string name="anime_saved">Successfully added Anime to favorites!</string>
+</resources>

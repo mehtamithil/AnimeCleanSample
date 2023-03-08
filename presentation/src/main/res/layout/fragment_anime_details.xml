@@ -9,7 +9,7 @@
 
         <variable
             name="anime"
-            type="com.anime_clean_sample.presentation.ui_state.AnimeDetailsUiState" />
+            type="com.anime_clean_sample.presentation.ui.state.AnimeDetailsUiState" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat
